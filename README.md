@@ -20,17 +20,19 @@ Follow these steps to set up the project:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/wahyudi404/predicta-grad.git
+   git clone <url>
    cd <repository>
 2. **Install dependencies Use Composer to install PHP dependencies:**
     ```bash
     composer install
+    ```
     **Use npm or Yarn to install JavaScript dependencies:**
     ```bash
     npm install
 3. **Set up the environment file Copy the .env.example file to .env:**
     ```bash
     cp .env.example .env
+    ```
     **Update the .env file with your database credentials and other configuration details:**
     ```bash
     DB_CONNECTION=mysql
