@@ -20,7 +20,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="w-100 d-flex justify-content-between align-items-center">
-                        <h3 class="card-title"> Data Data Training </h3>
+                        <h3 class="card-title"> Data Training </h3>
                         <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-add">
                             <i class="fas fa-plus"></i> Tambah
                         </button>
@@ -159,6 +159,73 @@
                 </div>
                 <!-- /.modal-dialog -->
             </div>
+        </div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="w-100 d-flex justify-content-between align-items-center">
+                        <h3 class="card-title"> Kategorisasi Data </h3>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover text-center data-training text-sm">
+                            <thead>
+                                <tr>
+                                    {{-- <th rowspan="3" class="align-middle">No</th> --}}
+                                    <th rowspan="3" style="min-width: 100px" class="align-middle">Nama</th>
+                                    <th colspan="{{ count($studies) }}">KategorisasiData Training</th>
+                                    <th colspan="2" class="align-middle">Lulus/Tidak Lulus</th>
+                                    {{-- <th rowspan="3" class="align-middle">Aksi</th> --}}
+                                </tr>
+                                <tr>
+                                    @foreach ($studies as $study)
+                                    <th>{{ $study->name }}</th>
+                                    @endforeach
+                                    <th rowspan="2" class="align-middle">T/TL</th>
+                                    <th rowspan="2" style="min-width: 150px" class="align-middle">Catatan</th>
+                                </tr>
+                                <tr>
+                                    @foreach ($studies as $study)
+                                        <th class="text-nowrap">Min {{ $study->min }} - Max {{ $study->max }}</th>
+                                    @endforeach
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($data as $key => $row)
+                                    <tr>
+                                        {{-- <td>{{ ++$key }}</td> --}}
+                                        <td>{{ $row->name }}</td>
+                                        @foreach ($row->participantScores as $participantScore)
+                                            <td>
+                                                {!!
+                                                ($participantScore->score >= $participantScore->study->min) ?
+                                                    "<span class='badge badge-success'>Tinggi</span>" :
+                                                    "<span class='badge badge-danger'>Rendah</span>"
+                                                !!}
+                                            </td>
+                                        @endforeach
+                                        <td>
+                                            @if ($row->isPassed == 2)
+                                                <span class="badge badge-success">Lulus</span>
+                                            @elseif ($row->isPassed == 1)
+                                                <span class="badge badge-danger">Tidak Lulus</span>
+                                            @else
+                                                <span>-</span>
+                                            @endif
+                                        </td>
+                                        <td>{{ $row->notes }}</td>
+                                        {{-- <td></td> --}}
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
         </div>
         <!-- /.col -->
     </div>

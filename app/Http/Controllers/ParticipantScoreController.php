@@ -14,12 +14,15 @@ class ParticipantScoreController extends Controller
     public function index()
     {
         $data = Participant::with(['participantScores' => fn ($query) =>
-            $query->orderBy('study_id', 'asc')
+            $query->with('study', fn ($queryStudy) =>
+                $queryStudy->select('id', 'min')
+            )->orderBy('study_id', 'asc')
         ])->has('participantScores')->latest()->get();
 
         $participants = Participant::orderBy('name', 'asc')->get();
         $studies = Study::orderBy('id', 'asc')->get();
 
+        // dd($data->toArray());
         return view('data-training.index', compact('data', 'participants', 'studies'));
     }
 

@@ -25,7 +25,8 @@ class PredictionGradController extends Controller
                 $studyId = $study['id'];
                 $studyKey = 'mapel-' . $studyId;
                 $studyValue = $value[$studyKey];
-                $studyCategories[$studyKey] = $studyValue > $study['min'] ? 1 : 0;
+                // 1 : Tinggi, 0 : Rendah
+                $studyCategories[$studyKey] = $studyValue >= $study['min'] ? 1 : 0;
             }
 
             $result->push([
@@ -50,6 +51,19 @@ class PredictionGradController extends Controller
             'dataSiswa.*.required' => 'Data siswa wajib diisi',
             'dataSiswa.*.string' => 'Data siswa harus berupa string',
         ];
+
+        $dataNilaiSiswaBaru = collect([]);
+        foreach ($studies as $study) {
+            $nilai = $request->nilaiSiswa['mapel-' . $study->id];
+            $kategori = ($nilai >= $study->min) ? "Tinggi" : "Rendah";
+            $dataNilaiSiswaBaru->push([
+                'id' => $study->id,
+                'mapel' => $study->name,
+                'nilai' => $nilai,
+                'kategori' => $kategori,
+                'color' => ($kategori == "Tinggi") ? "success" : "danger"
+            ]);
+        }
 
         foreach ($studies as $study) {
             $rules['nilaiSiswa.mapel-' . $study->id] = "required|numeric|min:0|max:{$study->max}";
@@ -161,6 +175,10 @@ class PredictionGradController extends Controller
 
         // Peng-kategori-an Data
         $kategoriData = $this->categorical($dataTraining, $studies);
+        // return response()->json([
+        //     "data" => $dataTraining->toArray(),
+        //     "hasil" =>$kategoriData->toArray()
+        // ]);
         // dd($kategoriData->toArray());
 
         // Probabilitas Kelas
@@ -230,8 +248,8 @@ class PredictionGradController extends Controller
         return response()->json([
             'success' => 200,
             'siswa_baru' => $dataSiswaBaru,
-            'nilai_siswa_baru' => $nilaiSiswaBaru,
-            'prediksi' => $prediction
+            'data_nilai_siswa_baru' => $dataNilaiSiswaBaru,
+            'prediksi' => $prediction,
         ]);
     }
 }

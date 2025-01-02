@@ -104,6 +104,27 @@
                         </table>
                     </div>
                     <div>
+                        <table id="data-nilai-siswa-baru" class="table table-bordered text-center">
+                            <thead>
+                                <tr style="background: #e0e0e0">
+                                    <th colspan="3">Data Nilai Siswa</th>
+                                </tr>
+                                <tr>
+                                    <th width="40%">Mata Pelajaran</th>
+                                    <th width="30%">Nilai</th>
+                                    <th width="30%">Kategori</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
                         <table class="table table-bordered">
                             <thead>
                                 <tr style="background: #e0e0e0">
@@ -178,14 +199,35 @@
                         'nilaiSiswa': nilaiSiswa
                     },
                     success: function(response) {
-                        $('#hasil-prediksi').removeClass('d-none');
-                        $('#nama-siswa').text(response.siswa_baru.name);
-                        $('#asal-lembaga').text(response.siswa_baru.origin_of_institution);
-                        $('#alamat').text(response.siswa_baru.address);
+                        let data_nilai_siswa_baru = response.data_nilai_siswa_baru;
+                        let siswa_baru = response.siswa_baru;
                         let predictions = response.prediksi;
                         let probabilitas_lulus = 0;
                         let probabilitas_tidak_lulus = 0;
                         let kesimpulan = '';
+
+                        // tampilkan tampilan hasil
+                        $('#hasil-prediksi').removeClass('d-none');
+
+                        // data siswa
+                        $('#nama-siswa').text(siswa_baru.name);
+                        $('#asal-lembaga').text(siswa_baru.origin_of_institution);
+                        $('#alamat').text(siswa_baru.address);
+
+                        // data nilai
+                        $('#data-nilai-siswa-baru tbody').html('');
+                        data_nilai_siswa_baru.forEach(data_nilai => {
+                            let row = `
+                                <tr>
+                                    <td>${data_nilai.mapel}</td>
+                                    <td>${data_nilai.nilai}</td>
+                                    <td><span class="badge badge-${data_nilai.color}">${data_nilai.kategori}</span></td>
+                                </tr>
+                            `;
+                            $('#data-nilai-siswa-baru tbody').append(row);
+                        });
+
+                        // prediksi
 
                         predictions.forEach(prediction => {
                             if(prediction.status == 2) {
