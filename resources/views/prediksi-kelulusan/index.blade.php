@@ -80,6 +80,74 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
+                    {{-- Probabilitas Kelas --}}
+                    <div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr style="background: #e0e0e0">
+                                    <th colspan="3" class="text-center">Probabilitas Kelas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td width="20%">Total Siswa</td>
+                                    <td id="total-siswa"></td>
+                                </tr>
+                                <tr>
+                                    <td width="20%">Siswa Lulus</td>
+                                    <td id="siswa-lulus"></td>
+                                </tr>
+                                <tr>
+                                    <td width="20%">Siswa Tidak Lulus</td>
+                                    <td id="siswa-tidak-lulus"></td>
+                                </tr>
+                                <tr>
+                                    <td width="20%">Probabilitas Kelas Lulus</td>
+                                    <td id="probabilitas-kelas-lulus"></td>
+                                </tr>
+                                <tr>
+                                    <td width="20%">Probabilitas Kelas Tidak Lulus</td>
+                                    <td id="probabilitas-kelas-tidak-lulus"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {{-- Probabilitas Kondisional: Untuk Kelas Lulus --}}
+                    <div>
+                        <table id="probabilitas-kondisional-lulus" class="table table-bordered text-center">
+                            <thead>
+                                <tr style="background: #e0e0e0">
+                                    <th colspan="3" class="text-center">Probabilitas Kondisional: Untuk Kelas Lulus</th>
+                                </tr>
+                                <tr>
+                                    <th>Mata Pelajaran</th>
+                                    <th>Nilai</th>
+                                    <th>Probabilitas</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+                    {{-- Probabilitas Kondisional: Untuk Kelas Tidak Lulus --}}
+                    <div>
+                        <table id="probabilitas-kondisional-tidak-lulus" class="table table-bordered text-center">
+                            <thead>
+                                <tr style="background: #e0e0e0">
+                                    <th colspan="3" class="text-center">Probabilitas Kondisional: Untuk Kelas Tidak Lulus</th>
+                                </tr>
+                                <tr>
+                                    <th>Mata Pelajaran</th>
+                                    <th>Nilai</th>
+                                    <th>Probabilitas</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+                    {{-- Data Siswa --}}
                     <div>
                         <table class="table table-bordered">
                             <thead>
@@ -103,6 +171,8 @@
                             </tbody>
                         </table>
                     </div>
+
+                    {{-- Data Nilai --}}
                     <div>
                         <table id="data-nilai-siswa-baru" class="table table-bordered text-center">
                             <thead>
@@ -124,11 +194,12 @@
                             </tbody>
                         </table>
                     </div>
+
                     <div>
                         <table class="table table-bordered">
                             <thead>
                                 <tr style="background: #e0e0e0">
-                                    <th colspan="3" class="text-center">Hasil Prediksi</th>
+                                    <th colspan="3" class="text-center">Keputusan</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -199,12 +270,17 @@
                         'nilaiSiswa': nilaiSiswa
                     },
                     success: function(response) {
+                        // console.log(response);
+
                         let data_nilai_siswa_baru = response.data_nilai_siswa_baru;
                         let siswa_baru = response.siswa_baru;
                         let predictions = response.prediksi;
                         let probabilitas_lulus = 0;
                         let probabilitas_tidak_lulus = 0;
                         let kesimpulan = '';
+                        let probabilitas_cond = response.probabilitas_cond;
+                        let filter_p_cond_lulus = probabilitas_cond.filter(probabilitas_cond => probabilitas_cond.status == 2);
+                        let filter_p_cond_tidak_lulus = probabilitas_cond.filter(probabilitas_cond => probabilitas_cond.status == 1);
 
                         // tampilkan tampilan hasil
                         $('#hasil-prediksi').removeClass('d-none');
@@ -213,6 +289,13 @@
                         $('#nama-siswa').text(siswa_baru.name);
                         $('#asal-lembaga').text(siswa_baru.origin_of_institution);
                         $('#alamat').text(siswa_baru.address);
+
+                        // probabilitas kelas
+                        $('#total-siswa').text(response.total_siswa);
+                        $('#siswa-lulus').text(response.siswa_lulus);
+                        $('#siswa-tidak-lulus').text(response.siswa_tidak_lulus);
+                        $('#probabilitas-kelas-lulus').text(response.probabilitas_lulus);
+                        $('#probabilitas-kelas-tidak-lulus').text(response.probabilitas_tidak_lulus);
 
                         // data nilai
                         $('#data-nilai-siswa-baru tbody').html('');
@@ -227,8 +310,33 @@
                             $('#data-nilai-siswa-baru tbody').append(row);
                         });
 
-                        // prediksi
+                        // probabilitas kondisional kelas lulus
+                        $('#probabilitas-kondisional-lulus tbody').html('');
+                        filter_p_cond_lulus.forEach(p_cond => {
+                            let row = `
+                                <tr>
+                                    <td>${p_cond.nama_mapel}</td>
+                                    <td>${p_cond.nilai_name}</td>
+                                    <td>${p_cond.probabilitas}</td>
+                                </tr>
+                            `;
+                            $('#probabilitas-kondisional-lulus tbody').append(row);
+                        });
 
+                        // probabilitas kondisional kelas tidak lulus
+                        $('#probabilitas-kondisional-tidak-lulus tbody').html('');
+                        filter_p_cond_tidak_lulus.forEach(p_cond => {
+                            let row = `
+                                <tr>
+                                    <td>${p_cond.nama_mapel}</td>
+                                    <td>${p_cond.nilai_name}</td>
+                                    <td>${p_cond.probabilitas}</td>
+                                </tr>
+                            `;
+                            $('#probabilitas-kondisional-tidak-lulus tbody').append(row);
+                        });
+
+                        // prediksi
                         predictions.forEach(prediction => {
                             if(prediction.status == 2) {
                                 probabilitas_lulus = prediction.probabilitas;

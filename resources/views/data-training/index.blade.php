@@ -200,7 +200,7 @@
                                         @foreach ($row->participantScores as $participantScore)
                                             <td>
                                                 {!!
-                                                ($participantScore->score >= $participantScore->study->min) ?
+                                                ($participantScore->score > $participantScore->study->min) ?
                                                     "<span class='badge badge-success'>Tinggi</span>" :
                                                     "<span class='badge badge-danger'>Rendah</span>"
                                                 !!}

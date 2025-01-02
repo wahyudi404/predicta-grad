@@ -26,7 +26,7 @@ class PredictionGradController extends Controller
                 $studyKey = 'mapel-' . $studyId;
                 $studyValue = $value[$studyKey];
                 // 1 : Tinggi, 0 : Rendah
-                $studyCategories[$studyKey] = $studyValue >= $study['min'] ? 1 : 0;
+                $studyCategories[$studyKey] = $studyValue > $study['min'] ? 1 : 0;
             }
 
             $result->push([
@@ -55,7 +55,7 @@ class PredictionGradController extends Controller
         $dataNilaiSiswaBaru = collect([]);
         foreach ($studies as $study) {
             $nilai = $request->nilaiSiswa['mapel-' . $study->id];
-            $kategori = ($nilai >= $study->min) ? "Tinggi" : "Rendah";
+            $kategori = ($nilai > $study->min) ? "Tinggi" : "Rendah";
             $dataNilaiSiswaBaru->push([
                 'id' => $study->id,
                 'mapel' => $study->name,
@@ -204,7 +204,9 @@ class PredictionGradController extends Controller
                         'mapel' => $studyKey,
                         'nama_mapel' => $study['name'],
                         'nilai' => $nilaiStatus,
+                        'nilai_name' => $nilaiStatus == 1 ? 'Tinggi' : 'Rendah',
                         'status' => $status,
+                        'status_name' => $status == 2 ? 'Lulus' : 'Tidak Lulus',
                         'nilaiSiswaByStatus' => $nilaiSiswaByStatus,
                         'jmlSiswaByStatus' => $jmlSiswaByStatus,
                         'probabilitas' => $nilaiSiswaByStatus / $jmlSiswaByStatus,
@@ -229,6 +231,7 @@ class PredictionGradController extends Controller
         // }
 
         $prediction = collect([]);
+
         foreach ($dataStatus as $d_status) {
             $probabilitas_status = $d_status == 2 ? $p_lulus : $p_tidak_lulus;
             $probabilitas_nilai = [];
@@ -241,15 +244,21 @@ class PredictionGradController extends Controller
                 'status' => $d_status,
                 'status_text' => $d_status == 2 ? 'Lulus' : 'Tidak Lulus',
                 'probabilitas' => $probabilitas_status * $product_probabilitas_nilai,
+                'asd' => "$probabilitas_status, $product_probabilitas_nilai",
             ]);
         }
-
 
         return response()->json([
             'success' => 200,
             'siswa_baru' => $dataSiswaBaru,
             'data_nilai_siswa_baru' => $dataNilaiSiswaBaru,
             'prediksi' => $prediction,
+            'total_siswa' => $totalSiswa,
+            'siswa_lulus' => $siswaLulus,
+            'siswa_tidak_lulus' => $siswaTidakLulus,
+            'probabilitas_lulus' => $p_lulus,
+            'probabilitas_tidak_lulus' => $p_tidak_lulus,
+            'probabilitas_cond' => $probabilitasCond,
         ]);
     }
 }
