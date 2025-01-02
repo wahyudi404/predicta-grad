@@ -175,7 +175,7 @@
                                 <tr>
                                     {{-- <th rowspan="3" class="align-middle">No</th> --}}
                                     <th rowspan="3" style="min-width: 100px" class="align-middle">Nama</th>
-                                    <th colspan="{{ count($studies) }}">KategorisasiData Training</th>
+                                    <th colspan="{{ count($studies) }}">Kategorisasi Data Training</th>
                                     <th colspan="2" class="align-middle">Lulus/Tidak Lulus</th>
                                     {{-- <th rowspan="3" class="align-middle">Aksi</th> --}}
                                 </tr>
