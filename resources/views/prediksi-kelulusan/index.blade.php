@@ -27,7 +27,7 @@
                 <div class="card-body">
                     <form id="form-prediksi" action="">
                         <div class="row">
-                            <div class="col-12"><h5><b>Data Siswa:</b></h5></div>
+                            <div class="col-12"><h5><b>Data Siswa Baru:</b></h5></div>
                             <div class="col-md-4 col-12">
                                 <div class="form-group">
                                     <label for="name">Nama Siswa</label>
@@ -152,7 +152,7 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr style="background: #e0e0e0">
-                                    <th colspan="3" class="text-center">Data Siswa</th>
+                                    <th colspan="3" class="text-center">Data Siswa Baru</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -177,7 +177,7 @@
                         <table id="data-nilai-siswa-baru" class="table table-bordered text-center">
                             <thead>
                                 <tr style="background: #e0e0e0">
-                                    <th colspan="3">Data Nilai Siswa</th>
+                                    <th colspan="3">Data Nilai Siswa Baru</th>
                                 </tr>
                                 <tr>
                                     <th width="40%">Mata Pelajaran</th>
